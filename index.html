@@ -341,7 +341,23 @@ function connect() {
   if (!name) { showError('Введите имя'); return; }
   myName = name; myRoomId = room;
   const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-const wsUrl = `${protocol}//${location.host}`;
-ws = new WebSocket(wsUrl);
-ws.onerror = (e) => { showError('Ошибка подключения к серверу. Попробуйте обновить страницу.'); console.error('WS error', e); };
-    if (!myId) { myId = `p_${Date.now()}_${Math.random().toString(36).slice(2)}`; local
+  const wsUrl = `${protocol}//${location.host}`;
+  showError('Подключаемся: ' + wsUrl);
+  try {
+    ws = new WebSocket(wsUrl);
+  } catch(e) {
+    showError('Ошибка: ' + e.message);
+    return;
+  }
+  ws.onopen = () => {
+    showError('Соединение открыто!');
+    if (!myId) { myId = `p_${Date.now()}_${Math.random().toString(36).slice(2)}`; localStorage.setItem('katarik_pid', myId); }
+    ws.send(JSON.stringify({ type: 'join', roomId: room, name, playerId: myId }));
+  };
+  ws.onmessage = (e) => handleMessage(JSON.parse(e.data));
+  ws.onclose = (e) => {
+    showError('Соединение закрыто: код ' + e.code + ' — ' + e.reason);
+    addChat('', '⚡ Соединение прервано.', true);
+  };
+  ws.onerror = (e) => showError('WS ошибка — проверьте консоль');
+}
