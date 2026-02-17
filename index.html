@@ -341,6 +341,7 @@ function connect() {
   if (!name) { showError('Введите имя'); return; }
   myName = name; myRoomId = room;
   const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-  ws = new WebSocket(`${protocol}//${location.host}`);
-  ws.onopen = () => {
+const wsUrl = `${protocol}//${location.host}`;
+ws = new WebSocket(wsUrl);
+ws.onerror = (e) => { showError('Ошибка подключения к серверу. Попробуйте обновить страницу.'); console.error('WS error', e); };
     if (!myId) { myId = `p_${Date.now()}_${Math.random().toString(36).slice(2)}`; local
