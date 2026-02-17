@@ -191,6 +191,11 @@ function handlePass(room, playerId) {
 }
 
 const server = http.createServer((req, res) => {
+  if (req.url === '/health') {
+    res.writeHead(200, {'Content-Type':'text/plain'});
+    res.end('OK');
+    return;
+  }
   fs.readFile(path.join(__dirname,'index.html'), (err,data) => {
     if (err) { res.writeHead(404); res.end('Not found'); return; }
     res.writeHead(200,{'Content-Type':'text/html'});
