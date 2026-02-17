@@ -252,8 +252,8 @@ function connect(){
   const room=document.getElementById('input-room').value.trim()||'default';
   if(!name){showError('Введите имя');return;}
   myName=name;myRoomId=room;
-  const proto=location.protocol==='https:'?'wss:':'ws:';
-  const url=`${proto}//${location.host}`;
+  const proto='wss:';
+const url=`${proto}//${location.host}`;
   showError('Подключение...');
   try{ ws=new WebSocket(url); }catch(e){showError('Ошибка: '+e.message);return;}
   ws.onopen=()=>{
