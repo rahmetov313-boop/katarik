@@ -379,4 +379,8 @@ wss.on('connection', (ws) => {
   });
 });
 
-server.listen(PORT, () => console.log(`Katarik server running on port ${PORT}`));
+server.listen(PORT, '0.0.0.0', () => console.log(`Katarik server running on port ${PORT}`));
+
+process.on('SIGTERM', () => {
+  server.close(() => process.exit(0));
+});
